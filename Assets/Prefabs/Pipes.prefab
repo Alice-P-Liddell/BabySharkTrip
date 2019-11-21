@@ -62,7 +62,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42b425ca887eaa4439642262fe36f6a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minPositionY: -2
+  minPositionY: -1.5
   maxPositionY: 1.5
 --- !u!1 &305783360981151829
 GameObject:
