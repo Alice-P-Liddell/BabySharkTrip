@@ -10,13 +10,12 @@ public class FlashImage : MonoBehaviour
         gameObject.SetActive(false);    
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (gameObject.activeSelf)
         {
             float alpha = GetComponent<Image>().color.a;
-            alpha -= 0.01f;
+            alpha -= 0.05f;
             GetComponent<Image>().color = new Color(1, 1, 1, alpha);
 
             if (alpha < 0.01f)

@@ -7,6 +7,7 @@ public class Fish : MonoBehaviour
     [SerializeField] float jumpVelocity;
     [SerializeField] float maxHeight;
     [SerializeField] GameObject sprite;
+    
     Rigidbody2D rigid;
     bool isDead;
     public bool IsDead      //이렇게 일반 변수를 끼고 선언하면 내부에서만 변경 가능하고 외부에서는 읽기만 가능해진다.
@@ -35,21 +36,19 @@ public class Fish : MonoBehaviour
 
         //물고기 회전
         float angle;
-        if (isDead)
-        {
-            angle = 0f;
-        }
-        else
-        {
-            angle = Mathf.Atan2(rigid.velocity.y, 10) * Mathf.Rad2Deg;
-        }
+        //if (isDead)
+        //{
+        //    angle = 0f;
+        //}
+        //else
+        //{
+        angle = Mathf.Atan2(rigid.velocity.y, 10) * Mathf.Rad2Deg;
+        //}
         sprite.transform.localRotation = Quaternion.Euler(0.0f, 0.0f, angle);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        Camera.main.SendMessage("Shake");   //메인카메라는 Camera.main 찍어서 접근 가능하다.
-
         isDead = true;
     }
 

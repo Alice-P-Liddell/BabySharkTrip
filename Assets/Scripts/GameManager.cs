@@ -9,25 +9,37 @@ public class GameManager : MonoBehaviour
     [SerializeField] Text scoreText;
     [SerializeField] Fish fish;
     [SerializeField] GameObject pipes;
-    int score;
+    [SerializeField] GameObject title;
+    [SerializeField] GameObject overPanel;
+    [SerializeField] FlashImage flashImage;
+    [SerializeField] Text bestRecordText;
+    public Text scoreResultText;
+    public int score;
 
     enum State
     {
-        READY, PLAY, OVER
+        TITLE, READY, PLAY, OVER
     }
     State state;
 
     void Start()
     {
+        state = State.TITLE;
+
         pipes.SetActive(false);
-        state = State.READY;
+        title.SetActive(true);
         fish.SetKinematic(true);
+        scoreText.text = null;
     }
 
     void Update()
     {
         switch (state)
         {
+            case State.TITLE:
+                bestRecordText.text = PlayerPrefs.GetInt("Score").ToString();
+                if (Input.GetButtonDown("Fire1")) GameReady();
+                break;
             case State.READY:
                 if (Input.GetButtonDown("Fire1")) GameStart();
                 break;
@@ -35,11 +47,26 @@ public class GameManager : MonoBehaviour
                 if (fish.IsDead) GameOver();
                 break;
             case State.OVER:
-                if (Input.GetButtonDown("Fire1")) SceneManager.LoadScene("Game");
                 break;
             default:
                 break;
         }
+
+        if (score > PlayerPrefs.GetInt("Score"))
+        {
+            bestRecordText.text = score.ToString();
+        }
+    }
+
+    public void GameReady()
+    {
+        state = State.READY;
+
+        pipes.SetActive(false);
+        title.SetActive(false);
+        fish.SetKinematic(true);
+        scoreText.text = "Ready?";
+        score = 0;
     }
 
     void GameStart()
@@ -48,6 +75,7 @@ public class GameManager : MonoBehaviour
 
         fish.SetKinematic(false);
         pipes.SetActive(true);
+        scoreText.text = "Go!";
     }
 
     void GameOver()
@@ -55,16 +83,38 @@ public class GameManager : MonoBehaviour
         state = State.OVER;
 
         ScrollObject[] scrollObjects = GameObject.FindObjectsOfType<ScrollObject>();
-
         foreach (ScrollObject scrollObject in scrollObjects)
         {
             scrollObject.enabled = false;
         }
+
+        if (score > PlayerPrefs.GetInt("Score"))
+        {
+            PlayerPrefs.SetInt("Score", score);
+            bestRecordText.text = PlayerPrefs.GetInt("Score").ToString();
+        }
+     
+        StartCoroutine(SetOverPanel());
     }
 
     public void IncreaseScore()
     {
-        score++;
-        scoreText.text = score.ToString();
+        //score++;
+        scoreText.text = (++score).ToString();
+        bestRecordText.text = score.ToString();
+    }
+
+    IEnumerator SetOverPanel()
+    {
+        Camera.main.SendMessage("Shake");   //메인카메라는 Camera.main 찍어서 접근 가능하다.
+        flashImage.StartFlash();
+        
+        yield return new WaitForSeconds(2f);
+        overPanel.SetActive(true);
+    }
+
+    public void ClickRetryButton()
+    {
+        SceneManager.LoadScene("Game");
     }
 }
