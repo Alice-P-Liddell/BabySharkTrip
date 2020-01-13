@@ -11,10 +11,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject pipes;
     [SerializeField] GameObject title;
     [SerializeField] GameObject overPanel;
+    [SerializeField] GameObject touchText;
     [SerializeField] FlashImage flashImage;
     [SerializeField] Text bestRecordText;
-    public Text scoreResultText;
+    [SerializeField] Text scoreResultText;
     public int score;
+    public static GameManager gameManager;
 
     enum State
     {
@@ -26,9 +28,10 @@ public class GameManager : MonoBehaviour
     {
         state = State.TITLE;
 
+        fish.SetKinematic(true);
         pipes.SetActive(false);
         title.SetActive(true);
-        fish.SetKinematic(true);
+        touchText.SetActive(true);
         scoreText.text = null;
     }
 
@@ -64,6 +67,7 @@ public class GameManager : MonoBehaviour
 
         pipes.SetActive(false);
         title.SetActive(false);
+        touchText.SetActive(false);
         fish.SetKinematic(true);
         scoreText.text = "Ready?";
         score = 0;
@@ -91,9 +95,10 @@ public class GameManager : MonoBehaviour
         if (score > PlayerPrefs.GetInt("Score"))
         {
             PlayerPrefs.SetInt("Score", score);
-            bestRecordText.text = PlayerPrefs.GetInt("Score").ToString();
         }
-     
+
+        scoreResultText.text = score.ToString();
+
         StartCoroutine(SetOverPanel());
     }
 
@@ -101,7 +106,11 @@ public class GameManager : MonoBehaviour
     {
         //score++;
         scoreText.text = (++score).ToString();
-        bestRecordText.text = score.ToString();
+
+        if (score > PlayerPrefs.GetInt("Score"))
+        {
+            bestRecordText.text = score.ToString();
+        }
     }
 
     IEnumerator SetOverPanel()

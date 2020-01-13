@@ -12,13 +12,4 @@ public class RetryButton : MonoBehaviour
     {
         SceneManager.LoadScene("Game");
     }
-
-    private void Update()
-    {
-        if (gameObject.activeSelf)
-        {
-            
-            scoreText.text = PlayerPrefs.GetInt("Score").ToString();
-        }
-    }
 }
